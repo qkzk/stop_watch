@@ -1,7 +1,7 @@
 # Stop Watch
 
 Simple stopwatch made using Chat GPT.
-Use pygame zero for interaction.
+Use [pygame zero](https://pygame-zero.readthedocs.io/en/stable/) for interaction.
 
 ![Stop Watch](stop_watch.png)
 
