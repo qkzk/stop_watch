@@ -3,6 +3,8 @@
 Simple stopwatch made using Chat GPT.
 Use pygame zero for interaction.
 
+![Stop Watch](stop_watch.png)
+
 # Run
 
 ```sh
