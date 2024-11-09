@@ -1,29 +1,17 @@
-"""
-Simple stopwatch made using Chat GPT. 
-Use pygame zero for interaction.
-
-```sh
-$ pip install pgzero
-```
-"""
-
-import pgzrun
+import tkinter as tk
 import time
-
-# Window size and title
-WIDTH = 400
-HEIGHT = 200
-TITLE = "Simple Stopwatch - Press SPACE to Start/Pause"
 
 
 class Stopwatch:
-    def __init__(self):
+    def __init__(self, label: tk.Label):
         """Initializes a stopwatch that is not running and has no elapsed time."""
+        self.label = label
         self.start_time = None
         self.running = False
         self.elapsed_time = 0
+        self.update_display()
 
-    def start(self) -> None:
+    def start(self):
         """Starts the stopwatch. If already paused, it resumes from where it left off."""
         if not self.running:
             self.running = True
@@ -33,33 +21,30 @@ class Stopwatch:
             else:
                 # Resume from paused state
                 self.start_time = time.time() - self.elapsed_time
+            self.update_time()
 
-    def pause(self) -> None:
+    def pause(self):
         """Pauses the stopwatch and freezes the elapsed time."""
         if self.running:
             self.elapsed_time = time.time() - self.start_time
             self.running = False
 
-    def draw(self) -> None:
-        """Draws the time on the screen. Running time is white, paused time is grey."""
-        hours, minutes, seconds = self.time_in_hms()
-        time_str = f"{hours:02}:{minutes:02}:{seconds:02}"
-
-        color = "white" if self.running else "grey"
-
-        # Draw the time in the middle of the screen
-        screen.clear()
-        screen.fill((0, 0, 0))
-        screen.draw.text(
-            time_str, center=(WIDTH // 2, HEIGHT // 2), fontsize=60, color=color
-        )
-
-    def update_time(self) -> None:
-        """Updates the elapsed time if the stopwatch is running."""
+    def update_time(self):
+        """Updates the elapsed time if the stopwatch is running and refreshes display."""
         if self.running:
             self.elapsed_time = time.time() - self.start_time
+            self.update_display()
+            # Schedule the next update
+            self.label.after(50, self.update_time)
 
-    def time_in_hms(self) -> tuple[int, int, int]:
+    def update_display(self):
+        """Updates the label with the current elapsed time in HH:MM:SS format."""
+        hours, minutes, seconds = self.time_in_hms()
+        text = f"{hours:02}:{minutes:02}:{seconds:02}"
+        fg = "white" if self.running else "grey"
+        self.label.config(text=text, fg=fg)
+
+    def time_in_hms(self):
         """Returns the elapsed time in hours, minutes, and seconds."""
         hours = int(self.elapsed_time // 3600)
         minutes = int((self.elapsed_time % 3600) // 60)
@@ -67,30 +52,44 @@ class Stopwatch:
         return hours, minutes, seconds
 
 
+# Initialize the main tkinter window
+root = tk.Tk()
+root.title("stop_watch")
+
+# Create a label to display the time
+time_label = tk.Label(root, text="00:00:00", font=("Vera", 42), fg="grey")
+time_label.pack(pady=20)
+
 # Create an instance of the Stopwatch class
-stopwatch = Stopwatch()
+stopwatch = Stopwatch(time_label)
 
 
-def draw():
-    """Calls the draw method from the Stopwatch class."""
-    stopwatch.draw()
+def toggle_stopwatch():
+    """Start or pause the stopwatch on button click."""
+    if stopwatch.running:
+        stopwatch.pause()
+    else:
+        stopwatch.start()
 
 
-def update():
-    """Updates the elapsed time if the stopwatch is running."""
-    stopwatch.update_time()
+def handle_keypress(event):
+    """Handle keyboard shortcuts for toggling and exiting."""
+    if event.keysym == "space":
+        toggle_stopwatch()
+    elif event.keysym in ("Escape", "q"):
+        root.quit()
 
 
-def on_key_down(key):
-    """Handles the SPACE key press to start/pause the stopwatch."""
-    if key == keys.SPACE:
-        if stopwatch.running:
-            stopwatch.pause()
-        else:
-            stopwatch.start()
-    if key == keys.ESCAPE:
-        exit()
+# Add a button to control the stopwatch
+toggle_button = tk.Button(
+    root, text="Start / Pause", command=toggle_stopwatch, font=("Helvetica", 14)
+)
+toggle_button.pack(pady=10)
 
+# Bind the keyboard shortcuts
+root.bind("<space>", handle_keypress)
+root.bind("<Escape>", handle_keypress)
+root.bind("<q>", handle_keypress)
 
-# Run the game loop
-pgzrun.go()
+# Start the tkinter main loop
+root.mainloop()
