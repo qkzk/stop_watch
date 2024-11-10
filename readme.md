@@ -1,7 +1,7 @@
 # Stop Watch
 
 Simple stopwatch made using Chat GPT.
-Use [pygame zero](https://pygame-zero.readthedocs.io/en/stable/) for interaction.
+Use tkinter for the ui.
 
 ![Stop Watch](stop_watch.png)
 
@@ -12,15 +12,7 @@ $ python stop_watch.py
 ```
 
 - Press SPACE to start or pause.
-- Press ESCAPE to exit.
-
-## Install
-
-Install dependencies with :
-
-```sh
-$ pip install pgzero
-```
+- Press ESCAPE or Q to exit.
 
 ## ChatGTP
 
@@ -46,3 +38,5 @@ GPT-4o mini (2024/10/13)
    - draw to display. Stopped time is drawned in grey, running time in white
 
    Use a correct title for the window
+
+I adapted the rest myself.
